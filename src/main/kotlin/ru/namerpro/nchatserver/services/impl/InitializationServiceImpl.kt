@@ -63,4 +63,8 @@ class InitializationServiceImpl @Autowired constructor(
 
     override fun getInitializedClients(): Response<List<Pair<Long, String>>> = Response.SUCCESS(clientRepository.getInitializedClients())
 
+    override fun isInitialized(
+        clientId: Long
+    ): Response<Boolean> = Response.SUCCESS(clientRepository.isInitialized(clientId))
+
 }

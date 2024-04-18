@@ -47,4 +47,16 @@ class InitializationController @Autowired constructor(
         }
     }
 
+    @PostMapping(value = ["/is_initialized/{client_id}"])
+    fun isInitialized(
+        @PathVariable(name = "client_id") clientId: Long
+    ): ResponseEntity<Boolean> {
+        val response = initializationService.isInitialized(clientId)
+        return if (response.isSuccess) {
+            ResponseEntity(response.data, HttpStatus.OK)
+        } else {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+    }
+
 }

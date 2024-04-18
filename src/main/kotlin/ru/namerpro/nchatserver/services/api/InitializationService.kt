@@ -14,4 +14,8 @@ interface InitializationService {
 
     fun getInitializedClients(): Response<List<Pair<Long, String>>>
 
+    fun isInitialized(
+        clientId: Long
+    ): Response<Boolean>
+
 }

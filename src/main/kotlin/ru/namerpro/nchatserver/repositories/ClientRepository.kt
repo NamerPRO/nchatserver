@@ -35,4 +35,8 @@ class ClientRepository : ObjectRepository<Client, Client?> {
         }.toList()
     }
 
+    fun isInitialized(
+        clientId: Long
+    ): Boolean = clientHolderMap.containsKey(clientId)
+
 }
