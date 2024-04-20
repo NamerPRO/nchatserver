@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import ru.namerpro.nchatserver.services.api.SecretKeyExchangeService
-import java.math.BigInteger
 
 @RestController
 class SecretKeyExchangeController @Autowired constructor(
@@ -24,7 +23,7 @@ class SecretKeyExchangeController @Autowired constructor(
         val response = secretKeyExchangeService.sendPartOfKey(
             receiverId = receiverId,
             chatId = chatId,
-            key.toBigInteger()
+            partOfKey = key
         )
         return if (response.isSuccess) {
             ResponseEntity(HttpStatus.OK)
@@ -36,7 +35,7 @@ class SecretKeyExchangeController @Autowired constructor(
     @PostMapping(value = ["/get_parts_of_keys/{client_id}"])
     fun getPartsOfKeys(
         @PathVariable(name = "client_id") clientId: Long
-    ): ResponseEntity<List<Pair<Long, BigInteger>>> {
+    ): ResponseEntity<List<Pair<Long, String>>> {
         val response = secretKeyExchangeService.getPartsOfKeys(clientId)
         return if (response.isSuccess) {
             ResponseEntity(response.data, HttpStatus.OK)

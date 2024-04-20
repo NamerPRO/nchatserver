@@ -7,12 +7,14 @@ interface ChatManagementService {
     fun addNewChat(
         creatorId: Long,
         partnerId: Long,
-        chatId: Long
+        chatId: Long,
+        secret: String,
+        chatName: String
     ): Response<Unit>
 
     fun newChats(
         clientId: Long
-    ): Response<List<Triple<Long, Long, String>>>
+    ): Response<List<Triple<Pair<Long, String>, Pair<Long, String>, String>>>
 
     fun isChatCreated(
         clientId: Long,

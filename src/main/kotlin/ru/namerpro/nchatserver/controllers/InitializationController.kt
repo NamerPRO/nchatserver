@@ -20,6 +20,8 @@ class InitializationController @Autowired constructor(
         val response = initializationService.initialize(clientName)
         return if (response.isSuccess) {
             ResponseEntity(response.data, HttpStatus.OK)
+        } else if (clientName.isNotBlank()) {
+            ResponseEntity(HttpStatus.CONFLICT)
         } else {
             ResponseEntity(HttpStatus.BAD_REQUEST)
         }

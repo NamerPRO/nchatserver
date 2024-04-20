@@ -39,4 +39,8 @@ class ClientRepository : ObjectRepository<Client, Client?> {
         clientId: Long
     ): Boolean = clientHolderMap.containsKey(clientId)
 
+    fun isInitializedByName(
+        clientName: String
+    ): Boolean = clientHolderMap.any { it.value.name == clientName }
+
 }

@@ -7,7 +7,6 @@ import ru.namerpro.nchatserver.repositories.ClientRepository
 import ru.namerpro.nchatserver.repositories.MessagesRepository
 import ru.namerpro.nchatserver.repositories.SecretKeyRepository
 import ru.namerpro.nchatserver.services.api.SecretKeyExchangeService
-import java.math.BigInteger
 
 @Service
 class SecretKeyExchangeServiceImpl @Autowired constructor(
@@ -19,7 +18,7 @@ class SecretKeyExchangeServiceImpl @Autowired constructor(
     override fun sendPartOfKey(
         receiverId: Long,
         chatId: Long,
-        partOfKey: BigInteger
+        partOfKey: String
     ): Response<Unit> {
         if (clientRepository.retrieve(receiverId) == null
                 || !messagesRepository.hasLinkageWith(receiverId, chatId)) {
@@ -31,7 +30,7 @@ class SecretKeyExchangeServiceImpl @Autowired constructor(
 
     override fun getPartsOfKeys(
         clientId: Long
-    ): Response<List<Pair<Long, BigInteger>>> {
+    ): Response<List<Pair<Long, String>>> {
         if (clientRepository.retrieve(clientId) == null) {
             return Response.FAILED()
         }

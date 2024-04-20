@@ -4,9 +4,9 @@ import org.apache.kafka.clients.admin.NewTopic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ru.namerpro.nchatserver.model.Response
-import ru.namerpro.nchatserver.repositories.NewChatsRepository
 import ru.namerpro.nchatserver.repositories.ClientRepository
 import ru.namerpro.nchatserver.repositories.MessagesRepository
+import ru.namerpro.nchatserver.repositories.NewChatsRepository
 import ru.namerpro.nchatserver.services.api.ChatManagementService
 
 @Service
@@ -19,7 +19,9 @@ class ChatManagementServiceImpl @Autowired constructor(
     override fun addNewChat(
         creatorId: Long,
         partnerId: Long,
-        chatId: Long
+        chatId: Long,
+        secret: String,
+        chatName: String
     ): Response<Unit> {
         val client = clientRepository.retrieve(creatorId)
         if (client == null || clientRepository.retrieve(partnerId) == null
@@ -27,13 +29,13 @@ class ChatManagementServiceImpl @Autowired constructor(
                         || !messagesRepository.hasLinkageWith(partnerId, chatId)) {
             return Response.FAILED()
         }
-        newChatsRepository.store(partnerId, Triple(chatId, creatorId, client.name))
+        newChatsRepository.store(partnerId, Triple(Pair(chatId, chatName), Pair(creatorId, client.name), secret))
         return Response.SUCCESS()
     }
 
     override fun newChats(
         clientId: Long
-    ): Response<List<Triple<Long, Long, String>>> {
+    ): Response<List<Triple<Pair<Long, String>, Pair<Long, String>, String>>> {
         if (clientRepository.retrieve(clientId) == null) {
             return Response.FAILED()
         }

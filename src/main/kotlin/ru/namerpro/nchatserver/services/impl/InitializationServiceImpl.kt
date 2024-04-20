@@ -24,7 +24,7 @@ class InitializationServiceImpl @Autowired constructor(
     override fun initialize(
         clientName: String
     ): Response<Long> {
-        if (clientName.isBlank()) {
+        if (clientName.isBlank() || clientRepository.isInitializedByName(clientName)) {
             return Response.FAILED()
         }
         val clientId = clientIdHolder.incrementAndGet()
