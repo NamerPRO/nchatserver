@@ -15,15 +15,15 @@ class SecretKeyExchangeController @Autowired constructor(
     private val secretKeyExchangeService: SecretKeyExchangeService
 ) {
 
-    @PostMapping(value = ["/send_part_of_key/{sender_id}/{receiver_id}"])
+    @PostMapping(value = ["/send_part_of_key/{receiver_id}/{chat_id}"])
     fun sendPartOfKey(
-        @PathVariable(name = "sender_id") senderId: Long,
         @PathVariable(name = "receiver_id") receiverId: Long,
+        @PathVariable(name = "chat_id") chatId: Long,
         @RequestBody key: String
     ): ResponseEntity<HttpStatus> {
         val response = secretKeyExchangeService.sendPartOfKey(
-            senderId = senderId,
             receiverId = receiverId,
+            chatId = chatId,
             key.toBigInteger()
         )
         return if (response.isSuccess) {

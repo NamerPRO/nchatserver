@@ -7,7 +7,7 @@ import java.util.HashMap
 @Repository
 class SecretKeyRepository : ObjectRepository<Pair<Long, BigInteger>, List<Pair<Long, BigInteger>>> {
 
-    // client id -> pairs { partnerId, shareable }
+    // client id -> pairs { chatId, shareable }
     private val partsOfKeysHolder = HashMap<Long, MutableList<Pair<Long, BigInteger>>>()
 
     override fun store(

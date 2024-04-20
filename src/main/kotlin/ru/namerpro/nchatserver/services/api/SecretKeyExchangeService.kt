@@ -6,8 +6,8 @@ import java.math.BigInteger
 interface SecretKeyExchangeService {
 
     fun sendPartOfKey(
-        senderId: Long,
         receiverId: Long,
+        chatId: Long,
         partOfKey: BigInteger
     ): Response<Unit>
 

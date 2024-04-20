@@ -4,14 +4,15 @@ import ru.namerpro.nchatserver.model.Response
 
 interface ChatManagementService {
 
-    fun requestChat(
+    fun addNewChat(
         creatorId: Long,
-        partnerId: Long
+        partnerId: Long,
+        chatId: Long
     ): Response<Unit>
 
-    fun pingChatRequest(
+    fun newChats(
         clientId: Long
-    ): Response<List<Long>>
+    ): Response<List<Triple<Long, Long, String>>>
 
     fun isChatCreated(
         clientId: Long,

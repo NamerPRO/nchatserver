@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ru.namerpro.nchatserver.model.Client
 import ru.namerpro.nchatserver.model.Response
-import ru.namerpro.nchatserver.repositories.ChatRequestsRepository
+import ru.namerpro.nchatserver.repositories.NewChatsRepository
 import ru.namerpro.nchatserver.repositories.ClientRepository
 import ru.namerpro.nchatserver.repositories.MessagesRepository
 import ru.namerpro.nchatserver.repositories.SecretKeyRepository
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong
 @Service
 class InitializationServiceImpl @Autowired constructor(
     private val clientRepository: ClientRepository,
-    private val chatRequestsRepository: ChatRequestsRepository,
+    private val newChatsRepository: NewChatsRepository,
     private val secretKeyRepository: SecretKeyRepository,
     private val messagesRepository: MessagesRepository
 ): InitializationService {
@@ -55,7 +55,7 @@ class InitializationServiceImpl @Autowired constructor(
         }
 
         secretKeyRepository.delete(clientId)
-        chatRequestsRepository.delete(clientId)
+        newChatsRepository.delete(clientId)
         clientRepository.delete(clientId)
 
         return Response.SUCCESS()

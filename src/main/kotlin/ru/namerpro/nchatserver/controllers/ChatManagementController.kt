@@ -13,14 +13,16 @@ class ChatManagementController @Autowired constructor(
     private val chatManagementService: ChatManagementService
 ) {
 
-    @PostMapping(value = ["/request_chat/{creator_id}/{partner_id}"])
-    fun requestChat(
+    @PostMapping(value = ["/add_new_chat/{creator_id}/{partner_id}/{chat_id}"])
+    fun addNewChat(
         @PathVariable(name = "creator_id") creatorId: Long,
         @PathVariable(name = "partner_id") partnerId: Long,
+        @PathVariable(name = "chat_id") chatId: Long
     ): ResponseEntity<HttpStatus> {
-        val response = chatManagementService.requestChat(
+        val response = chatManagementService.addNewChat(
             creatorId = creatorId,
-            partnerId = partnerId
+            partnerId = partnerId,
+            chatId = chatId
         )
         return if (response.isSuccess) {
             ResponseEntity(HttpStatus.OK)
@@ -29,11 +31,11 @@ class ChatManagementController @Autowired constructor(
         }
     }
 
-    @PostMapping(value = ["/ping_chat_requests/{client_id}"])
-    fun pingChatRequests(
+    @PostMapping(value = ["/new_chats/{client_id}"])
+    fun newChats(
         @PathVariable(name = "client_id") clientId: Long
-    ): ResponseEntity<List<Long>> {
-        val response = chatManagementService.pingChatRequest(clientId)
+    ): ResponseEntity<List<Triple<Long, Long, String>>> {
+        val response = chatManagementService.newChats(clientId)
         return if (response.isSuccess) {
             ResponseEntity(response.data, HttpStatus.OK)
         } else {

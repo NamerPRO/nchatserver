@@ -4,7 +4,7 @@ import org.apache.kafka.clients.admin.NewTopic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ru.namerpro.nchatserver.model.Response
-import ru.namerpro.nchatserver.repositories.ChatRequestsRepository
+import ru.namerpro.nchatserver.repositories.NewChatsRepository
 import ru.namerpro.nchatserver.repositories.ClientRepository
 import ru.namerpro.nchatserver.repositories.MessagesRepository
 import ru.namerpro.nchatserver.services.api.ChatManagementService
@@ -12,33 +12,33 @@ import ru.namerpro.nchatserver.services.api.ChatManagementService
 @Service
 class ChatManagementServiceImpl @Autowired constructor(
     private val clientRepository: ClientRepository,
-    private val chatRequestsRepository: ChatRequestsRepository,
+    private val newChatsRepository: NewChatsRepository,
     private val messagesRepository: MessagesRepository
 ) : ChatManagementService {
 
-    override fun requestChat(
+    override fun addNewChat(
         creatorId: Long,
-        partnerId: Long
+        partnerId: Long,
+        chatId: Long
     ): Response<Unit> {
-        if (clientRepository.retrieve(creatorId) == null
-                || clientRepository.retrieve(partnerId) == null) {
+        val client = clientRepository.retrieve(creatorId)
+        if (client == null || clientRepository.retrieve(partnerId) == null
+                    || !messagesRepository.hasLinkageWith(creatorId, chatId)
+                        || !messagesRepository.hasLinkageWith(partnerId, chatId)) {
             return Response.FAILED()
         }
-        chatRequestsRepository.store(
-            id = creatorId,
-            element = partnerId
-        )
+        newChatsRepository.store(partnerId, Triple(chatId, creatorId, client.name))
         return Response.SUCCESS()
     }
 
-    override fun pingChatRequest(
+    override fun newChats(
         clientId: Long
-    ): Response<List<Long>> {
+    ): Response<List<Triple<Long, Long, String>>> {
         if (clientRepository.retrieve(clientId) == null) {
             return Response.FAILED()
         }
-        val data = chatRequestsRepository.retrieve(clientId)
-        chatRequestsRepository.delete(clientId)
+        val data = newChatsRepository.retrieve(clientId)
+        newChatsRepository.delete(clientId)
         return Response.SUCCESS(data)
     }
 
