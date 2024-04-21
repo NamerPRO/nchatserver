@@ -1,16 +1,17 @@
 package ru.namerpro.nchatserver.repositories
 
 import org.springframework.stereotype.Repository
+import ru.namerpro.nchatserver.model.Chat
 
 @Repository
-class NewChatsRepository : ObjectRepository<Triple<Pair<Long, String>, Pair<Long, String>, String>, List<Triple<Pair<Long, String>, Pair<Long, String>, String>>> {
+class NewChatsRepository : ObjectRepository<Chat, List<Chat>> {
 
-    // client id -> { chat id + chat name } + { partner id + partner name } + secret
-    private val newChatsHolder = HashMap<Long, MutableList<Triple<Pair<Long, String>, Pair<Long, String>, String>>>()
+    // client id -> { chat id + chat name } + { partner id + partner name } + secret + cipher type
+    private val newChatsHolder = HashMap<Long, MutableList<Chat>>()
 
     override fun store(
         id: Long,
-        element: Triple<Pair<Long, String>, Pair<Long, String>, String>
+        element: Chat
     ) {
         val data = newChatsHolder.getOrPut(id) { mutableListOf() }
         data.add(element)
@@ -18,7 +19,7 @@ class NewChatsRepository : ObjectRepository<Triple<Pair<Long, String>, Pair<Long
 
     override fun retrieve(
         id: Long
-    ): List<Triple<Pair<Long, String>, Pair<Long, String>, String>> = newChatsHolder[id] ?: emptyList()
+    ): List<Chat> = newChatsHolder[id] ?: emptyList()
 
     override fun delete(
         id: Long

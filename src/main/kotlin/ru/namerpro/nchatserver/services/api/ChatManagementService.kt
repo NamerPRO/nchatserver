@@ -1,20 +1,13 @@
 package ru.namerpro.nchatserver.services.api
 
+import ru.namerpro.nchatserver.model.Chat
 import ru.namerpro.nchatserver.model.Response
 
 interface ChatManagementService {
 
-    fun addNewChat(
-        creatorId: Long,
-        partnerId: Long,
-        chatId: Long,
-        secret: String,
-        chatName: String
-    ): Response<Unit>
-
     fun newChats(
         clientId: Long
-    ): Response<List<Triple<Pair<Long, String>, Pair<Long, String>, String>>>
+    ): Response<List<Chat>>
 
     fun isChatCreated(
         clientId: Long,
@@ -23,7 +16,10 @@ interface ChatManagementService {
 
     fun createChat(
         creatorId: Long,
-        partnerId: Long
+        partnerId: Long,
+        chatName: String,
+        cipherType: String,
+        secret: String
     ): Response<Long>
 
     fun leaveChat(

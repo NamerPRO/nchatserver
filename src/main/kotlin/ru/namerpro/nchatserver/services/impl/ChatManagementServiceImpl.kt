@@ -3,6 +3,7 @@ package ru.namerpro.nchatserver.services.impl
 import org.apache.kafka.clients.admin.NewTopic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import ru.namerpro.nchatserver.model.Chat
 import ru.namerpro.nchatserver.model.Response
 import ru.namerpro.nchatserver.repositories.ClientRepository
 import ru.namerpro.nchatserver.repositories.MessagesRepository
@@ -16,26 +17,9 @@ class ChatManagementServiceImpl @Autowired constructor(
     private val messagesRepository: MessagesRepository
 ) : ChatManagementService {
 
-    override fun addNewChat(
-        creatorId: Long,
-        partnerId: Long,
-        chatId: Long,
-        secret: String,
-        chatName: String
-    ): Response<Unit> {
-        val client = clientRepository.retrieve(creatorId)
-        if (client == null || clientRepository.retrieve(partnerId) == null
-                    || !messagesRepository.hasLinkageWith(creatorId, chatId)
-                        || !messagesRepository.hasLinkageWith(partnerId, chatId)) {
-            return Response.FAILED()
-        }
-        newChatsRepository.store(partnerId, Triple(Pair(chatId, chatName), Pair(creatorId, client.name), secret))
-        return Response.SUCCESS()
-    }
-
     override fun newChats(
         clientId: Long
-    ): Response<List<Triple<Pair<Long, String>, Pair<Long, String>, String>>> {
+    ): Response<List<Chat>> {
         if (clientRepository.retrieve(clientId) == null) {
             return Response.FAILED()
         }
@@ -57,7 +41,10 @@ class ChatManagementServiceImpl @Autowired constructor(
 
     override fun createChat(
         creatorId: Long,
-        partnerId: Long
+        partnerId: Long,
+        chatName: String,
+        cipherType: String,
+        secret: String
     ): Response<Long> {
         val client = clientRepository.retrieve(creatorId) ?: return Response.FAILED()
         val partner = clientRepository.retrieve(partnerId) ?: return Response.FAILED()
@@ -76,6 +63,8 @@ class ChatManagementServiceImpl @Autowired constructor(
 
         messagesRepository.createChat(creatorId, chatId, partnerToCreatorTopic)
         messagesRepository.createChat(partnerId, chatId, creatorToPartnerTopic)
+
+        newChatsRepository.store(partnerId, Chat(chatName, chatId, client.name, creatorId, secret, cipherType))
 
         return Response.SUCCESS(chatId)
     }
