@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import ru.namerpro.nchatserver.model.Message
 import ru.namerpro.nchatserver.services.api.MessageTransferService
 
 @RestController
@@ -19,7 +18,7 @@ class MessageTransferController @Autowired constructor(
     fun getMessages(
         @PathVariable(name = "client_id") clientId: Long,
         @PathVariable(name = "chat_id") chatId: Long
-    ): ResponseEntity<List<Message>> {
+    ): ResponseEntity<List<String>> {
         val response = messageTransferService.getMessages(clientId, chatId)
         return if (response.isSuccess) {
             ResponseEntity(response.data, HttpStatus.OK)
@@ -32,9 +31,9 @@ class MessageTransferController @Autowired constructor(
     fun sendMessage(
         @PathVariable(name = "client_id") clientId: Long,
         @PathVariable(name = "chat_id") chatId: Long,
-        @RequestBody message: Message
+        @RequestBody message: String
     ): ResponseEntity<HttpStatus> {
-        val response = messageTransferService.sendMessage(clientId, chatId, message.text + "|" + message.date)
+        val response = messageTransferService.sendMessage(clientId, chatId, message)
         return if (response.isSuccess) {
             ResponseEntity(HttpStatus.OK)
         } else {

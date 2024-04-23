@@ -1,6 +1,7 @@
 package ru.namerpro.nchatserver.services.api
 
 import ru.namerpro.nchatserver.model.Chat
+import ru.namerpro.nchatserver.model.ChatData
 import ru.namerpro.nchatserver.model.Response
 
 interface ChatManagementService {
@@ -17,9 +18,7 @@ interface ChatManagementService {
     fun createChat(
         creatorId: Long,
         partnerId: Long,
-        chatName: String,
-        cipherType: String,
-        secret: String
+        chatData: ChatData
     ): Response<Long>
 
     fun leaveChat(

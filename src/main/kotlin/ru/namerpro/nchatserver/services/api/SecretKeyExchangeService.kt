@@ -1,6 +1,7 @@
 package ru.namerpro.nchatserver.services.api
 
 import ru.namerpro.nchatserver.model.Response
+import ru.namerpro.nchatserver.model.Secret
 
 interface SecretKeyExchangeService {
 
@@ -12,6 +13,6 @@ interface SecretKeyExchangeService {
 
     fun getPartsOfKeys(
         clientId: Long
-    ): Response<List<Pair<Long, String>>>
+    ): Response<List<Secret>>
 
 }

@@ -4,6 +4,7 @@ import org.apache.kafka.clients.admin.NewTopic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ru.namerpro.nchatserver.model.Chat
+import ru.namerpro.nchatserver.model.ChatData
 import ru.namerpro.nchatserver.model.Response
 import ru.namerpro.nchatserver.repositories.ClientRepository
 import ru.namerpro.nchatserver.repositories.MessagesRepository
@@ -42,9 +43,7 @@ class ChatManagementServiceImpl @Autowired constructor(
     override fun createChat(
         creatorId: Long,
         partnerId: Long,
-        chatName: String,
-        cipherType: String,
-        secret: String
+        chatData: ChatData
     ): Response<Long> {
         val client = clientRepository.retrieve(creatorId) ?: return Response.FAILED()
         val partner = clientRepository.retrieve(partnerId) ?: return Response.FAILED()
@@ -64,7 +63,7 @@ class ChatManagementServiceImpl @Autowired constructor(
         messagesRepository.createChat(creatorId, chatId, partnerToCreatorTopic)
         messagesRepository.createChat(partnerId, chatId, creatorToPartnerTopic)
 
-        newChatsRepository.store(partnerId, Chat(chatName, chatId, client.name, creatorId, secret, cipherType))
+        newChatsRepository.store(partnerId, Chat(chatData.chatName, chatId, client.name, creatorId, chatData.secret, chatData.cipherType, chatData.iv))
 
         return Response.SUCCESS(chatId)
     }
@@ -81,7 +80,7 @@ class ChatManagementServiceImpl @Autowired constructor(
         // If partner did not disconnect
         if (messagesRepository.hasLinkageWith(partnerId, chatId)) {
             // Let him know we did
-            messagesRepository.sendMessage(clientId, Pair(chatId, "${MessagesRepository.EXIT_CODE}|"))
+            messagesRepository.sendMessage(clientId, Pair(chatId, "${MessagesRepository.EXIT_CODE}"))
         }
 
         client.chatIdToPartner.remove(chatId)

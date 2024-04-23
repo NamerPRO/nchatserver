@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import ru.namerpro.nchatserver.model.Secret
 import ru.namerpro.nchatserver.services.api.SecretKeyExchangeService
 
 @RestController
@@ -18,12 +19,12 @@ class SecretKeyExchangeController @Autowired constructor(
     fun sendPartOfKey(
         @PathVariable(name = "receiver_id") receiverId: Long,
         @PathVariable(name = "chat_id") chatId: Long,
-        @RequestBody key: String
+        @RequestBody secret: String
     ): ResponseEntity<HttpStatus> {
         val response = secretKeyExchangeService.sendPartOfKey(
             receiverId = receiverId,
             chatId = chatId,
-            partOfKey = key
+            partOfKey = secret
         )
         return if (response.isSuccess) {
             ResponseEntity(HttpStatus.OK)
@@ -35,7 +36,7 @@ class SecretKeyExchangeController @Autowired constructor(
     @PostMapping(value = ["/get_parts_of_keys/{client_id}"])
     fun getPartsOfKeys(
         @PathVariable(name = "client_id") clientId: Long
-    ): ResponseEntity<List<Pair<Long, String>>> {
+    ): ResponseEntity<List<Secret>> {
         val response = secretKeyExchangeService.getPartsOfKeys(clientId)
         return if (response.isSuccess) {
             ResponseEntity(response.data, HttpStatus.OK)

@@ -2,7 +2,6 @@ package ru.namerpro.nchatserver.services.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import ru.namerpro.nchatserver.model.Message
 import ru.namerpro.nchatserver.model.Response
 import ru.namerpro.nchatserver.repositories.ClientRepository
 import ru.namerpro.nchatserver.repositories.MessagesRepository
@@ -17,15 +16,12 @@ class MessageTransferServiceImpl @Autowired constructor(
     override fun getMessages(
         clientId: Long,
         chatId: Long
-    ): Response<List<Message>> {
+    ): Response<List<String>> {
         val client = clientRepository.retrieve(clientId)
         if (client == null || !client.chatIdToPartner.containsKey(chatId)) {
             return Response.FAILED()
         }
-        val messages = messagesRepository.receiveMessages(clientId, chatId).map {
-            val data = it.split('|')
-            Message(data[0], data[1])
-        }.toList()
+        val messages = messagesRepository.receiveMessages(clientId, chatId)
         return Response.SUCCESS(messages)
     }
 

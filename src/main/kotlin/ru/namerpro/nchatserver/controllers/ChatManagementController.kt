@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import ru.namerpro.nchatserver.model.Chat
+import ru.namerpro.nchatserver.model.ChatData
 import ru.namerpro.nchatserver.services.api.ChatManagementService
 
 @RestController
@@ -31,9 +32,9 @@ class ChatManagementController @Autowired constructor(
     fun createChat(
         @PathVariable(name = "creator_id") creatorId: Long,
         @PathVariable(name = "partner_id") partnerId: Long,
-        @RequestBody chatData: Triple<String, String, String>
+        @RequestBody chatData: ChatData
     ): ResponseEntity<Long> {
-        val response = chatManagementService.createChat(creatorId, partnerId, chatData.first, chatData.second, chatData.third)
+        val response = chatManagementService.createChat(creatorId, partnerId, chatData)
         return if (response.isSuccess) {
             ResponseEntity(response.data, HttpStatus.OK)
         } else {

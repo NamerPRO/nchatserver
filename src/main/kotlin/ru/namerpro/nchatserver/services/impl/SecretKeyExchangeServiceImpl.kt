@@ -3,6 +3,7 @@ package ru.namerpro.nchatserver.services.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ru.namerpro.nchatserver.model.Response
+import ru.namerpro.nchatserver.model.Secret
 import ru.namerpro.nchatserver.repositories.ClientRepository
 import ru.namerpro.nchatserver.repositories.MessagesRepository
 import ru.namerpro.nchatserver.repositories.SecretKeyRepository
@@ -24,13 +25,13 @@ class SecretKeyExchangeServiceImpl @Autowired constructor(
                 || !messagesRepository.hasLinkageWith(receiverId, chatId)) {
             return Response.FAILED()
         }
-        secretKeyRepository.store(receiverId, Pair(chatId, partOfKey))
+        secretKeyRepository.store(receiverId, Secret(chatId, partOfKey))
         return Response.SUCCESS()
     }
 
     override fun getPartsOfKeys(
         clientId: Long
-    ): Response<List<Pair<Long, String>>> {
+    ): Response<List<Secret>> {
         if (clientRepository.retrieve(clientId) == null) {
             return Response.FAILED()
         }

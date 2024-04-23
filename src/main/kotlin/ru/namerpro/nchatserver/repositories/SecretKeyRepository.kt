@@ -1,16 +1,16 @@
 package ru.namerpro.nchatserver.repositories
 
 import org.springframework.stereotype.Repository
+import ru.namerpro.nchatserver.model.Secret
 
 @Repository
-class SecretKeyRepository : ObjectRepository<Pair<Long, String>, List<Pair<Long, String>>> {
+class SecretKeyRepository : ObjectRepository<Secret, List<Secret>> {
 
-    // client id -> pairs { chatId, shareable }
-    private val partsOfKeysHolder = HashMap<Long, MutableList<Pair<Long, String>>>()
+    private val partsOfKeysHolder = HashMap<Long, MutableList<Secret>>()
 
     override fun store(
         id: Long,
-        element: Pair<Long, String>
+        element: Secret
     ) {
         val data = partsOfKeysHolder.getOrPut(id) { mutableListOf() }
         data.add(element)
@@ -18,7 +18,7 @@ class SecretKeyRepository : ObjectRepository<Pair<Long, String>, List<Pair<Long,
 
     override fun retrieve(
         id: Long
-    ): List<Pair<Long, String>> = partsOfKeysHolder[id] ?: emptyList()
+    ): List<Secret> = partsOfKeysHolder[id] ?: emptyList()
 
     override fun delete(
         id: Long

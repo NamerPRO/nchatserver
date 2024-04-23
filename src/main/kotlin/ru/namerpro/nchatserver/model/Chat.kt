@@ -6,5 +6,6 @@ data class Chat(
     val partnerName: String,
     val partnerId: Long,
     val secret: String,
-    val cipherType: String
+    val cipherType: String,
+    val iv: String
 )

@@ -46,7 +46,7 @@ class InitializationServiceImpl @Autowired constructor(
 
             if (clientRepository.retrieve(partnerId) != null) {
                 // Telling client we left, because it is not disconnected
-                messagesRepository.sendMessage(clientId, Pair(chatId, "${MessagesRepository.EXIT_CODE}|"))
+                messagesRepository.sendMessage(clientId, Pair(chatId, "${MessagesRepository.EXIT_CODE}"))
             }
 
             // Close reader channels
