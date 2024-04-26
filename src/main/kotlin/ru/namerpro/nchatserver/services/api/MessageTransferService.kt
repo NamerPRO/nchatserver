@@ -1,5 +1,7 @@
 package ru.namerpro.nchatserver.services.api
 
+import org.springframework.core.io.InputStreamResource
+import org.springframework.web.multipart.MultipartFile
 import ru.namerpro.nchatserver.model.Response
 
 interface MessageTransferService {
@@ -14,5 +16,16 @@ interface MessageTransferService {
         chatId: Long,
         message: String
     ): Response<Unit>
+
+    fun uploadFile(
+        clientId: Long,
+        chatId: Long,
+        file: MultipartFile,
+        message: String
+    ): Response<Unit>
+
+    fun downloadFile(
+        fileName: String
+    ): Response<Pair<Long, InputStreamResource>>
 
 }

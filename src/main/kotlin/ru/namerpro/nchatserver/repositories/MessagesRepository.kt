@@ -113,8 +113,9 @@ class MessagesRepository @Autowired constructor(
             StringSerializer()
         )
 
-        const val MESSAGE_CODE = 0
+        const val TEXT_MESSAGE_CODE = 0
         const val EXIT_CODE = 1
+        const val FILE_MESSAGE_CODE =  2
     }
 
 }

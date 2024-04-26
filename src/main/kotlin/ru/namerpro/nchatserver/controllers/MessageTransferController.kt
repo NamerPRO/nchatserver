@@ -1,16 +1,17 @@
 package ru.namerpro.nchatserver.controllers
 
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import ru.namerpro.nchatserver.services.api.MessageTransferService
 
 @RestController
 class MessageTransferController @Autowired constructor(
+    private val response: HttpServletResponse,
     private val messageTransferService: MessageTransferService
 ) {
 
@@ -36,6 +37,35 @@ class MessageTransferController @Autowired constructor(
         val response = messageTransferService.sendMessage(clientId, chatId, message)
         return if (response.isSuccess) {
             ResponseEntity(HttpStatus.OK)
+        } else {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @PostMapping("/upload_file/{client_id}/{chat_id}")
+    fun uploadFIle(
+        @PathVariable(name = "client_id") clientId: Long,
+        @PathVariable(name = "chat_id") chatId: Long,
+        @RequestParam("file") file: MultipartFile,
+        @RequestParam("message") message: String,
+    ): ResponseEntity<HttpStatus> {
+        val response = messageTransferService.uploadFile(clientId, chatId, file, message)
+        return if (response.isSuccess) {
+            ResponseEntity(HttpStatus.OK)
+        } else {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @PostMapping("/download_file/{file_name}")
+    fun downloadFiles(
+        @PathVariable(name = "file_name") fileName: String
+    ): ResponseEntity<InputStreamResource> {
+        val response = messageTransferService.downloadFile(fileName)
+        return if (response.isSuccess) {
+            ResponseEntity.ok()
+                .contentLength(response.data!!.first)
+                .body(response.data.second)
         } else {
             ResponseEntity(HttpStatus.BAD_REQUEST)
         }
