@@ -44,12 +44,13 @@ class MessageTransferController @Autowired constructor(
 
     @PostMapping("/upload_file/{client_id}/{chat_id}")
     fun uploadFIle(
+        @RequestHeader("Full-File-Length") fullFileLength: Long,
         @PathVariable(name = "client_id") clientId: Long,
         @PathVariable(name = "chat_id") chatId: Long,
         @RequestParam("file") file: MultipartFile,
         @RequestParam("message") message: String,
     ): ResponseEntity<HttpStatus> {
-        val response = messageTransferService.uploadFile(clientId, chatId, file, message)
+        val response = messageTransferService.uploadFile(fullFileLength, clientId, chatId, file, message)
         return if (response.isSuccess) {
             ResponseEntity(HttpStatus.OK)
         } else {

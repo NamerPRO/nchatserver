@@ -71,7 +71,7 @@ class MessagesRepository @Autowired constructor(
         chatId: Long
     ) {
         if (readChannelsHolder[id]?.containsKey(chatId) == true) {
-            readChannelsHolder[id]?.get(chatId)?.close()
+//            readChannelsHolder[id]?.get(chatId)?.close()
             readChannelsHolder[id]?.remove(chatId)
         }
     }

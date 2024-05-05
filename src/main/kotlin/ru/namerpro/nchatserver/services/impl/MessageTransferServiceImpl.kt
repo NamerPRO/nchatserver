@@ -47,12 +47,16 @@ class MessageTransferServiceImpl @Autowired constructor(
     }
 
     override fun uploadFile(
+        fullFileLength: Long,
         clientId: Long,
         chatId: Long,
         file: MultipartFile,
         message: String
     ): Response<Unit> {
         try {
+            if (fullFileLength != file.size) {
+                return Response.FAILED()
+            }
             val client = clientRepository.retrieve(clientId) ?: return Response.FAILED()
             val partnerId = client.chatIdToPartner[chatId] ?: return Response.FAILED()
             if (!messagesRepository.hasLinkageWith(partnerId, chatId)) {

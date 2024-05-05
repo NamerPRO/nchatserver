@@ -88,6 +88,11 @@ class ChatManagementServiceImpl @Autowired constructor(
         val partnerToClientTopic = "topic_${partnerId}_${clientId}_$chatId"
         messagesRepository.removeTopics(listOf(partnerToClientTopic))
 
+        if (clientId == partnerId) {
+            val clientToPartnerTopic = "topic_${clientId}_${partnerId}_$chatId"
+            messagesRepository.removeTopics(listOf(clientToPartnerTopic))
+        }
+
         return Response.SUCCESS()
     }
 

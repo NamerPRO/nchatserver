@@ -18,6 +18,7 @@ interface MessageTransferService {
     ): Response<Unit>
 
     fun uploadFile(
+        fullFileLength: Long,
         clientId: Long,
         chatId: Long,
         file: MultipartFile,
